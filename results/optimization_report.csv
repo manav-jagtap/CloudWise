@@ -1,0 +1,6 @@
+Resource_ID,Status,Monthly_Cost,Estimated_Saving,Recommendation
+VM-01,NORMAL,8000,0.0,No optimization required
+VM-02,POTENTIALLY IDLE,12000,12000.0,Review resource for shutdown
+VM-03,UNDERUTILIZED,10000,4000.0,Review resource for rightsizing
+VM-04,POTENTIALLY IDLE,7000,7000.0,Review resource for shutdown
+VM-05,NORMAL,6500,0.0,No optimization required
