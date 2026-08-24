@@ -4,6 +4,8 @@
     <title>CloudWise Dashboard</title>
 
     <style>
+
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f6f8;
@@ -40,9 +42,87 @@
             font-size: 28px;
             font-weight: bold;
         }
+        .table-title {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.table-container {
+    width: 95%;
+    margin: 20px auto;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+th {
+    padding: 15px;
+    background: #2c3e50;
+    color: white;
+}
+
+td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:hover {
+    background: #f5f5f5;
+}
+
     </style>
 </head>
+<h2 class="table-title">Resource Analysis</h2>
 
+<div class="table-container">
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <th>CPU Usage</th>
+                <th>RAM Usage</th>
+                <th>Status</th>
+                <th>Monthly Cost</th>
+                <th>Potential Saving</th>
+                <th>Recommendation</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for resource in resources %}
+
+            <tr>
+                <td>{{ resource.id }}</td>
+
+                <td>{{ resource.cpu }}%</td>
+
+                <td>{{ resource.ram }}%</td>
+
+                <td>{{ resource.status }}</td>
+
+                <td>₹{{ resource.cost }}</td>
+
+                <td>₹{{ resource.saving }}</td>
+
+                <td>{{ resource.recommendation }}</td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
 <body>
 
     <h1>CloudWise Dashboard</h1>
@@ -51,22 +131,22 @@
 
         <div class="card">
             <h2>Total Cost</h2>
-            <div class="value">₹43,500</div>
+            <div class="value">₹{{ total_cost }}</div>
         </div>
 
         <div class="card">
             <h2>Potential Saving</h2>
-            <div class="value">₹23,000</div>
+            <div class="value">₹{{ potential_saving }}</div>
         </div>
 
         <div class="card">
             <h2>Optimized Cost</h2>
-            <div class="value">₹20,500</div>
+            <div class="value">₹{{ optimized_cost }}</div>
         </div>
 
         <div class="card">
             <h2>Saving %</h2>
-            <div class="value">52.87%</div>
+            <div class="value">{{ saving_percentage }}%</div>
         </div>
 
     </div>
