@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
+
 <head>
+
+    <meta charset="UTF-8">
+
     <title>CloudWise Dashboard</title>
 
     <style>
-
 
         body {
             font-family: Arial, sans-serif;
@@ -15,7 +19,59 @@
 
         h1 {
             text-align: center;
+            color: #2c3e50;
         }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+        }
+
+        /* Upload Section */
+
+        .upload-section {
+            background: white;
+            width: 60%;
+            margin: 30px auto;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .upload-section h2 {
+            margin-top: 0;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+        }
+
+        button {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 11px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        /* Error Message */
+
+        .error {
+            width: 60%;
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #ffe5e5;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        /* Dashboard Cards */
 
         .container {
             display: flex;
@@ -36,120 +92,274 @@
 
         .card h2 {
             margin-bottom: 10px;
+            font-size: 18px;
         }
 
         .value {
             font-size: 28px;
             font-weight: bold;
         }
+
+        /* Resource Table */
+
         .table-title {
-    text-align: center;
-    margin-top: 50px;
-}
+            text-align: center;
+            margin-top: 50px;
+        }
 
-.table-container {
-    width: 95%;
-    margin: 20px auto;
-    overflow-x: auto;
-}
+        .table-container {
+            width: 95%;
+            margin: 20px auto;
+            overflow-x: auto;
+        }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
 
-th {
-    padding: 15px;
-    background: #2c3e50;
-    color: white;
-}
+        th {
+            padding: 15px;
+            background: #2c3e50;
+            color: white;
+        }
 
-td {
-    padding: 15px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
-}
+        td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
 
-tr:hover {
-    background: #f5f5f5;
-}
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .empty-message {
+            text-align: center;
+            margin-top: 40px;
+            color: #777;
+        }
 
     </style>
+
 </head>
-<h2 class="table-title">Resource Analysis</h2>
 
-<div class="table-container">
 
-    <table>
-
-        <thead>
-            <tr>
-                <th>Resource</th>
-                <th>CPU Usage</th>
-                <th>RAM Usage</th>
-                <th>Status</th>
-                <th>Monthly Cost</th>
-                <th>Potential Saving</th>
-                <th>Recommendation</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            {% for resource in resources %}
-
-            <tr>
-                <td>{{ resource.id }}</td>
-
-                <td>{{ resource.cpu }}%</td>
-
-                <td>{{ resource.ram }}%</td>
-
-                <td>{{ resource.status }}</td>
-
-                <td>₹{{ resource.cost }}</td>
-
-                <td>₹{{ resource.saving }}</td>
-
-                <td>{{ resource.recommendation }}</td>
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
-
-</div>
 <body>
 
-    <h1>CloudWise Dashboard</h1>
 
-    <div class="container">
+<h1>CloudWise</h1>
 
-        <div class="card">
-            <h2>Total Cost</h2>
-            <div class="value">₹{{ total_cost }}</div>
-        </div>
+<p class="subtitle">
+    Cloud Cost Analysis & Resource Optimization Dashboard
+</p>
 
-        <div class="card">
-            <h2>Potential Saving</h2>
-            <div class="value">₹{{ potential_saving }}</div>
-        </div>
 
-        <div class="card">
-            <h2>Optimized Cost</h2>
-            <div class="value">₹{{ optimized_cost }}</div>
-        </div>
+<!-- CSV Upload Section -->
 
-        <div class="card">
-            <h2>Saving %</h2>
-            <div class="value">{{ saving_percentage }}%</div>
+<div class="upload-section">
+
+    <h2>Upload Cloud Resource Data</h2>
+
+    <p>
+        Select a CloudWise compatible CSV file
+        to analyze your cloud resources.
+    </p>
+
+    <form
+        method="POST"
+        enctype="multipart/form-data"
+    >
+
+        {% csrf_token %}
+
+        <input
+            type="file"
+            name="cloud_file"
+            accept=".csv"
+            required
+        >
+
+        <button type="submit">
+            Analyze CSV
+        </button>
+
+    </form>
+
+</div>
+
+
+<!-- Error Message -->
+
+{% if error_message %}
+
+<div class="error">
+
+    <strong>Error:</strong>
+
+    {{ error_message }}
+
+</div>
+
+{% endif %}
+
+
+<!-- Dashboard Results -->
+
+{% if resources %}
+
+
+<div class="container">
+
+
+    <div class="card">
+
+        <h2>Total Monthly Cost</h2>
+
+        <div class="value">
+            ₹{{ total_cost }}
         </div>
 
     </div>
 
+
+    <div class="card">
+
+        <h2>Potential Saving</h2>
+
+        <div class="value">
+            ₹{{ potential_saving }}
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Optimized Cost</h2>
+
+        <div class="value">
+            ₹{{ optimized_cost }}
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Saving Percentage</h2>
+
+        <div class="value">
+            {{ saving_percentage }}%
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- Resource Analysis Table -->
+
+<h2 class="table-title">
+    Resource Analysis
+</h2>
+
+
+<div class="table-container">
+
+<table>
+
+    <thead>
+
+    <tr>
+
+        <th>Resource</th>
+
+        <th>CPU Usage</th>
+
+        <th>RAM Usage</th>
+
+        <th>Status</th>
+
+        <th>Monthly Cost</th>
+
+        <th>Potential Saving</th>
+
+        <th>Recommendation</th>
+
+    </tr>
+
+    </thead>
+
+
+    <tbody>
+
+
+    {% for resource in resources %}
+
+    <tr>
+
+        <td>
+            {{ resource.id }}
+        </td>
+
+        <td>
+            {{ resource.cpu }}%
+        </td>
+
+        <td>
+            {{ resource.ram }}%
+        </td>
+
+        <td>
+            {{ resource.status }}
+        </td>
+
+        <td>
+            ₹{{ resource.cost }}
+        </td>
+
+        <td>
+            ₹{{ resource.saving }}
+        </td>
+
+        <td>
+            {{ resource.recommendation }}
+        </td>
+
+    </tr>
+
+    {% endfor %}
+
+
+    </tbody>
+
+</table>
+
+</div>
+
+
+{% else %}
+
+
+{% if not error_message %}
+
+<p class="empty-message">
+
+    Upload a CSV file to start
+    CloudWise resource analysis.
+
+</p>
+
+{% endif %}
+
+
+{% endif %}
+
+
 </body>
+
 </html>
