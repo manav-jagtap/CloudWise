@@ -6,9 +6,14 @@ from normalizers.azure import normalize_azure_data
 from normalizers.aws import normalize_aws_data
 from normalizers.gcp import normalize_gcp_data
 
+from analysis.optimization_engine import analyze_cloud_data
+
+
 def home(request):
-    selected_provider_name = None
+
     selected_provider = None
+    selected_provider_name = None
+
     resources = []
     total_current_cost = 0
     total_potential_saving = 0
@@ -16,16 +21,16 @@ def home(request):
     saving_percentage = 0
     error_message = None
 
+    provider_names = {
+        "offline": "Offline / Manual Data",
+        "azure": "Microsoft Azure",
+        "aws": "Amazon Web Services (AWS)",
+        "gcp": "Google Cloud Platform (GCP)",
+    }
+
     if request.method == "POST" and request.FILES.get("cloud_file"):
 
         selected_provider = request.POST.get("provider")
-
-        provider_names = {
-            "offline": "Offline / Manual Data",
-            "azure": "Microsoft Azure",
-            "aws": "Amazon Web Services (AWS)",
-            "gcp": "Google Cloud Platform (GCP)",
-        }
 
         selected_provider_name = provider_names.get(
             selected_provider,
@@ -35,9 +40,10 @@ def home(request):
         uploaded_file = request.FILES["cloud_file"]
 
         try:
+
             file_name = uploaded_file.name.lower()
 
-            # Detect file format
+            # Read uploaded file according to format
             if file_name.endswith(".csv"):
                 data = pd.read_csv(uploaded_file)
 
@@ -50,12 +56,13 @@ def home(request):
             else:
                 error_message = (
                     "Unsupported file format. "
-                    "Please upload a CSV, JSON or Parquet file."
+                    "Please upload CSV, JSON, or Parquet."
                 )
                 data = None
 
             if data is not None:
 
+                # Normalize provider-specific data
                 if selected_provider == "offline":
                     data = normalize_offline_data(data)
 
@@ -68,87 +75,19 @@ def home(request):
                 elif selected_provider == "gcp":
                     data = normalize_gcp_data(data)
 
-                required_columns = [
-                    "Resource_ID",
-                    "Resource_Type",
-                    "vCPU",
-                    "RAM_GB",
-                    "Avg_CPU",
-                    "Peak_CPU",
-                    "Avg_RAM",
-                    "Runtime_Hours",
-                    "Monthly_Cost",
-                ]
-
-                missing_columns = [
-                    column
-                    for column in required_columns
-                    if column not in data.columns
-                ]
-
-                if missing_columns:
-
-                    error_message = (
-                        "Missing required columns: "
-                        + ", ".join(missing_columns)
-                    )
-
                 else:
-
-                    total_current_cost = data["Monthly_Cost"].sum()
-
-                    for index, row in data.iterrows():
-
-                        monthly_cost = row["Monthly_Cost"]
-
-                        # Potentially Idle
-                        if row["Avg_CPU"] < 5 and row["Avg_RAM"] < 10:
-                            status = "POTENTIALLY IDLE"
-                            recommendation = "Review resource for shutdown"
-                            estimated_saving = monthly_cost
-
-                        # Underutilized
-                        elif row["Avg_CPU"] < 20 and row["Avg_RAM"] < 30:
-                            status = "UNDERUTILIZED"
-                            recommendation = "Review resource for rightsizing"
-                            estimated_saving = monthly_cost * 0.40
-
-                        # Overutilized
-                        elif row["Avg_CPU"] >= 70 or row["Avg_RAM"] >= 80:
-                            status = "OVERUTILIZED"
-                            recommendation = (
-                                "Review performance and consider possible upsizing"
-                            )
-                            estimated_saving = 0
-
-                        # Normal
-                        else:
-                            status = "NORMAL"
-                            recommendation = "No optimization required"
-                            estimated_saving = 0
-
-                        total_potential_saving += estimated_saving
-
-                        resources.append({
-                            "id": row["Resource_ID"],
-                            "cpu": row["Avg_CPU"],
-                            "ram": row["Avg_RAM"],
-                            "cost": monthly_cost,
-                            "status": status,
-                            "saving": estimated_saving,
-                            "recommendation": recommendation,
-                        })
-
-                    optimized_cost = (
-                        total_current_cost
-                        - total_potential_saving
+                    raise ValueError(
+                        "Please select a valid data source."
                     )
 
-                    if total_current_cost > 0:
-                        saving_percentage = (
-                            total_potential_saving
-                            / total_current_cost
-                        ) * 100
+                # Send normalized data to optimization engine
+                analysis_result = analyze_cloud_data(data)
+
+                resources = analysis_result["resources"]
+                total_current_cost = analysis_result["total_cost"]
+                total_potential_saving = analysis_result["potential_saving"]
+                optimized_cost = analysis_result["optimized_cost"]
+                saving_percentage = analysis_result["saving_percentage"]
 
         except Exception as error:
 
@@ -158,14 +97,14 @@ def home(request):
             )
 
     context = {
-        "selected_provider_name": selected_provider_name,
         "resources": resources,
         "total_cost": total_current_cost,
         "potential_saving": total_potential_saving,
         "optimized_cost": optimized_cost,
-        "saving_percentage": round(saving_percentage, 2),
+        "saving_percentage": saving_percentage,
         "error_message": error_message,
         "selected_provider": selected_provider,
+        "selected_provider_name": selected_provider_name,
     }
 
     return render(
