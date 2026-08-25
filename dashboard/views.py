@@ -1,6 +1,10 @@
 import pandas as pd
 from django.shortcuts import render
 
+from normalizers.offline import normalize_offline_data
+from normalizers.azure import normalize_azure_data
+from normalizers.aws import normalize_aws_data
+from normalizers.gcp import normalize_gcp_data
 
 def home(request):
     selected_provider_name = None
@@ -51,6 +55,18 @@ def home(request):
                 data = None
 
             if data is not None:
+
+                if selected_provider == "offline":
+                    data = normalize_offline_data(data)
+
+                elif selected_provider == "azure":
+                    data = normalize_azure_data(data)
+
+                elif selected_provider == "aws":
+                    data = normalize_aws_data(data)
+
+                elif selected_provider == "gcp":
+                    data = normalize_gcp_data(data)
 
                 required_columns = [
                     "Resource_ID",
