@@ -3,7 +3,8 @@ from django.shortcuts import render
 
 
 def home(request):
-
+    selected_provider_name = None
+    selected_provider = None
     resources = []
     total_current_cost = 0
     total_potential_saving = 0
@@ -12,6 +13,20 @@ def home(request):
     error_message = None
 
     if request.method == "POST" and request.FILES.get("cloud_file"):
+
+        selected_provider = request.POST.get("provider")
+
+        provider_names = {
+            "offline": "Offline / Manual Data",
+            "azure": "Microsoft Azure",
+            "aws": "Amazon Web Services (AWS)",
+            "gcp": "Google Cloud Platform (GCP)",
+        }
+
+        selected_provider_name = provider_names.get(
+            selected_provider,
+            selected_provider
+        )
 
         uploaded_file = request.FILES["cloud_file"]
 
@@ -34,7 +49,7 @@ def home(request):
                     "Please upload a CSV, JSON or Parquet file."
                 )
                 data = None
-                
+
             if data is not None:
 
                 required_columns = [
@@ -127,12 +142,14 @@ def home(request):
             )
 
     context = {
+        "selected_provider_name": selected_provider_name,
         "resources": resources,
         "total_cost": total_current_cost,
         "potential_saving": total_potential_saving,
         "optimized_cost": optimized_cost,
         "saving_percentage": round(saving_percentage, 2),
         "error_message": error_message,
+        "selected_provider": selected_provider,
     }
 
     return render(

@@ -27,6 +27,8 @@
             color: #666;
         }
 
+
+
         /* Upload Section */
 
         .upload-section {
@@ -168,28 +170,61 @@
         to analyze your cloud resources.
     </p>
 
-    <form
-        method="POST"
-        enctype="multipart/form-data"
+    <form method="POST" enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+    <label for="provider">
+        <strong>Select Data Source:</strong>
+    </label>
+
+    <select name="provider" id="provider" required>
+
+        <option value="">
+            -- Select Source --
+        </option>
+
+        <option value="offline">
+            Offline / Manual Data
+        </option>
+
+        <option value="azure">
+            Microsoft Azure(AZ)
+        </option>
+
+        <option value="aws">
+            Amazon Web Services (AWS)
+        </option>
+
+        <option value="gcp">
+            Google Cloud Platform (GCP)
+        </option>
+
+    </select>
+
+    <br><br>
+
+    <input
+        type="file"
+        name="cloud_file"
+        accept=".csv,.json,.parquet"
+        required
     >
 
-        {% csrf_token %}
+    <button type="submit">
+        Analyze File
+    </button>
 
-        <input
-            type="file"
-            name="cloud_file"
-            accept=".csv,.json,.parquet"
-            required
-        >
-
-        <button type="submit">
-            Analyze CSV
-        </button>
-
-    </form>
+</form>
 
 </div>
 
+{% if selected_provider %}
+<p style="text-align: center; margin-top: 20px;">
+    Selected Data Source:
+    <strong>{{ selected_provider_name }}</strong>
+</p>
+{% endif %}
 
 <!-- Error Message -->
 
