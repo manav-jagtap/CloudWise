@@ -25,13 +25,16 @@ def home(request):
             elif file_name.endswith(".json"):
                 data = pd.read_json(uploaded_file)
 
+            elif file_name.endswith(".parquet"):
+                data = pd.read_parquet(uploaded_file)
+
             else:
                 error_message = (
                     "Unsupported file format. "
-                    "Please upload a CSV or JSON file."
+                    "Please upload a CSV, JSON or Parquet file."
                 )
                 data = None
-
+                
             if data is not None:
 
                 required_columns = [
