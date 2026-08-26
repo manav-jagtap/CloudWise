@@ -117,3 +117,55 @@ A resource is considered potentially idle when:
 Average CPU < 5%
 Average RAM < 10%
 Peak CPU < 20%
+```
+
+---
+
+## Installation and Setup
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/manav-jagtap/CloudWise.git
+cd CloudWise
+```
+
+### 2. Create a virtual environment
+
+```bash
+python -m venv .venv
+```
+
+### 3. Activate the virtual environment
+
+For Windows:
+
+```bash
+.venv\Scripts\activate
+```
+
+### 4. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Create the environment file
+
+Create a `.env` file in the project root and add:
+
+```text
+DJANGO_SECRET_KEY=your-secret-key
+```
+
+### 6. Run the Django development server
+
+```bash
+python manage.py runserver
+```
+
+Open in the browser:
+
+```text
+http://127.0.0.1:8000/
+```
