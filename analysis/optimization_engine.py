@@ -225,7 +225,11 @@ def analyze_cloud_data(data):
     # Main resources list keeps the original uploaded-file order.
     sorted_resources = sorted(
         resources,
-        key=lambda resource: resource["priority_score"],
+        key=lambda resource: (
+            resource["priority_score"],
+            resource["saving"],
+            resource["cost"],
+        ),
         reverse=True
     )
 

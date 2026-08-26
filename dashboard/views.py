@@ -58,6 +58,13 @@ def home(request):
 
         uploaded_file = request.FILES["cloud_file"]
 
+        max_file_size = 10 * 1024 * 1024  # 10 MB
+
+        if uploaded_file.size > max_file_size:
+            raise ValueError(
+                "File is too large. Maximum allowed size is 10 MB."
+            )
+
         try:
 
             file_name = uploaded_file.name.lower()
@@ -93,6 +100,19 @@ def home(request):
 
             if data is not None:
 
+                if data.empty:
+                    raise ValueError(
+                        "Uploaded file is empty."
+                    )
+                valid_providers = ["offline", "azure", "aws", "gcp"]
+
+                if selected_provider not in valid_providers:
+                    raise ValueError(
+                        "Please select a valid cloud data source."
+                    )
+
+            if data is not None:
+
                 if selected_provider == "offline":
 
                     data = normalize_offline_data(data)
@@ -118,6 +138,55 @@ def home(request):
                 # -----------------------------
                 # Analyze normalized data
                 # -----------------------------
+
+                numeric_columns = [
+                    "vCPU",
+                    "RAM_GB",
+                    "Avg_CPU",
+                    "Peak_CPU",
+                    "Avg_RAM",
+                    "Runtime_Hours",
+                    "Monthly_Cost",
+                ]
+
+                for column in numeric_columns:
+                    data[column] = pd.to_numeric(
+                        data[column],
+                        errors="coerce"
+                    )
+
+                if data[numeric_columns].isnull().any().any():
+                    raise ValueError(
+                        "Some numeric fields contain invalid or non-numeric values."
+                    )
+
+                if (
+                        (data["Avg_CPU"] < 0).any()
+                        or (data["Avg_CPU"] > 100).any()
+                        or (data["Peak_CPU"] < 0).any()
+                        or (data["Peak_CPU"] > 100).any()
+                        or (data["Avg_RAM"] < 0).any()
+                        or (data["Avg_RAM"] > 100).any()
+                ):
+                    raise ValueError(
+                        "CPU and RAM utilization values must be between 0 and 100."
+                    )
+
+                if (
+                        (data["vCPU"] < 0).any()
+                        or (data["RAM_GB"] < 0).any()
+                        or (data["Runtime_Hours"] < 0).any()
+                        or (data["Monthly_Cost"] < 0).any()
+                ):
+                    raise ValueError(
+                        "vCPU, RAM, runtime hours, and monthly cost cannot be negative."
+                    )
+
+                if data["Resource_ID"].duplicated().any():
+                    raise ValueError(
+                        "Duplicate Resource_ID values found. "
+                        "Each resource must be unique."
+                    )
 
                 analysis_result = analyze_cloud_data(data)
 

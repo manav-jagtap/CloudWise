@@ -1,0 +1,9 @@
+Resource_ID,Resource_Type,vCPU,RAM_GB,Avg_CPU,Peak_CPU,Avg_RAM,Runtime_Hours,Monthly_Cost
+VM-01,Virtual Machine,4,16,72,91,68,720,8000
+VM-02,Virtual Machine,8,32,3,18,7,720,12000
+VM-03,Virtual Machine,4,16,11,28,18,720,10000
+VM-04,Virtual Machine,2,8,0.8,5,2,500,7000
+VM-05,Virtual Machine,2,8,48,76,55,600,6500
+VM-06,Virtual Machine,4,16,18,45,25,650,9000
+VM-07,Virtual Machine,8,32,65,88,75,720,15000
+VM-08,Virtual Machine,4,16,40,65,82,720,11000
