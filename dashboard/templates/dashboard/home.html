@@ -295,6 +295,52 @@
 
 </div>
 
+{% if top_opportunities %}
+
+<h2 class="table-title">
+    Top Optimization Opportunities
+</h2>
+
+<div class="container">
+
+    {% for resource in top_opportunities %}
+
+    <div class="card">
+
+        <h2>{{ resource.id }}</h2>
+
+        <p>
+            <strong>Status:</strong>
+            {{ resource.status }}
+        </p>
+
+        <p>
+            <strong>Priority:</strong>
+            {{ resource.priority }}
+        </p>
+
+        <p>
+            <strong>Priority Score:</strong>
+            {{ resource.priority_score }}/100
+        </p>
+
+        <p>
+            <strong>Potential Saving:</strong>
+            ₹{{ resource.saving }}
+        </p>
+
+        <p>
+            {{ resource.recommendation }}
+        </p>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endif %}
+
 
 <!-- Resource Analysis Table -->
 
@@ -312,17 +358,15 @@
     <tr>
 
         <th>Resource</th>
-
-        <th>CPU Usage</th>
-
+        <th>Avg CPU</th>
+        <th>Peak CPU</th>
         <th>RAM Usage</th>
-
+        <th>Runtime Hours</th>
         <th>Status</th>
-
+        <th>Priority</th>
+        <th>Priority Score</th>
         <th>Monthly Cost</th>
-
         <th>Potential Saving</th>
-
         <th>Recommendation</th>
 
     </tr>
@@ -346,11 +390,27 @@
         </td>
 
         <td>
+            {{ resource.peak_cpu }}%
+        </td>
+
+        <td>
             {{ resource.ram }}%
         </td>
 
         <td>
+            {{ resource.runtime_hours }} hrs
+        </td>
+
+        <td>
             {{ resource.status }}
+        </td>
+
+        <td>
+            {{ resource.priority }}
+        </td>
+
+        <td>
+            {{ resource.priority_score }}/100
         </td>
 
         <td>

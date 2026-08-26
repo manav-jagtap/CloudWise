@@ -10,9 +10,10 @@ from analysis.optimization_engine import analyze_cloud_data
 
 
 def home(request):
-
+    top_opportunities = []
     selected_provider = None
     selected_provider_name = None
+
 
     resources = []
     total_current_cost = 0
@@ -84,6 +85,7 @@ def home(request):
                 analysis_result = analyze_cloud_data(data)
 
                 resources = analysis_result["resources"]
+                top_opportunities = analysis_result["top_opportunities"]
                 total_current_cost = analysis_result["total_cost"]
                 total_potential_saving = analysis_result["potential_saving"]
                 optimized_cost = analysis_result["optimized_cost"]
@@ -98,6 +100,7 @@ def home(request):
 
     context = {
         "resources": resources,
+        "top_opportunities": top_opportunities,
         "total_cost": total_current_cost,
         "potential_saving": total_potential_saving,
         "optimized_cost": optimized_cost,
