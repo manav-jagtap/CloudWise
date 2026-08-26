@@ -1,0 +1,57 @@
+[
+  {
+    "Resource_ID": "VM-01",
+    "Resource_Type": "Virtual Machine",
+    "vCPU": 4,
+    "RAM_GB": 16,
+    "Avg_CPU": 72,
+    "Peak_CPU": 91,
+    "Avg_RAM": 68,
+    "Runtime_Hours": 720,
+    "Monthly_Cost": 8000
+  },
+  {
+    "Resource_ID": "VM-02",
+    "Resource_Type": "Virtual Machine",
+    "vCPU": 8,
+    "RAM_GB": 32,
+    "Avg_CPU": 3,
+    "Peak_CPU": 18,
+    "Avg_RAM": 7,
+    "Runtime_Hours": 720,
+    "Monthly_Cost": 12000
+  },
+  {
+    "Resource_ID": "VM-03",
+    "Resource_Type": "Virtual Machine",
+    "vCPU": 4,
+    "RAM_GB": 16,
+    "Avg_CPU": 11,
+    "Peak_CPU": 28,
+    "Avg_RAM": 18,
+    "Runtime_Hours": 720,
+    "Monthly_Cost": 10000
+  },
+  {
+    "Resource_ID": "VM-04",
+    "Resource_Type": "Virtual Machine",
+    "vCPU": 2,
+    "RAM_GB": 8,
+    "Avg_CPU": 0.8,
+    "Peak_CPU": 5,
+    "Avg_RAM": 2,
+    "Runtime_Hours": 500,
+    "Monthly_Cost": 7000
+  },
+  {
+    "Resource_ID": "VM-05",
+    "Resource_Type": "Virtual Machine",
+    "vCPU": 2,
+    "RAM_GB": 8,
+    "Avg_CPU": 48,
+    "Peak_CPU": 76,
+    "Avg_RAM": 55,
+    "Runtime_Hours": 600,
+    "Monthly_Cost": 6500
+  }
+]
