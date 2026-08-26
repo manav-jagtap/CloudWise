@@ -58,14 +58,14 @@ def home(request):
 
         uploaded_file = request.FILES["cloud_file"]
 
-        max_file_size = 10 * 1024 * 1024  # 10 MB
-
-        if uploaded_file.size > max_file_size:
-            raise ValueError(
-                "File is too large. Maximum allowed size is 10 MB."
-            )
-
         try:
+
+            max_file_size = 10 * 1024 * 1024
+
+            if uploaded_file.size > max_file_size:
+                raise ValueError(
+                    "File is too large. Maximum allowed size is 10 MB."
+                )
 
             file_name = uploaded_file.name.lower()
 
