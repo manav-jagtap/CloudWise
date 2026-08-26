@@ -107,10 +107,9 @@ def analyze_resource(row):
             priority_score += 10
 
     else:
-
         priority_score = 10
 
-    # Score maximum 100
+    # Maximum score = 100
     priority_score = min(priority_score, 100)
 
     return {
@@ -129,25 +128,56 @@ def analyze_cloud_data(data):
     total_potential_saving = 0
     total_current_cost = data["Monthly_Cost"].sum()
 
+    # Clean status counters for Django template
+    status_counts = {
+        "idle": 0,
+        "underutilized": 0,
+        "normal": 0,
+        "overutilized": 0,
+    }
+
     for index, row in data.iterrows():
 
         result = analyze_resource(row)
 
         total_potential_saving += result["estimated_saving"]
 
-        # Full resource ID
+        # -----------------------------------
+        # Status Count
+        # -----------------------------------
+
+        if result["status"] == "POTENTIALLY IDLE":
+            status_counts["idle"] += 1
+
+        elif result["status"] == "UNDERUTILIZED":
+            status_counts["underutilized"] += 1
+
+        elif result["status"] == "OVERUTILIZED":
+            status_counts["overutilized"] += 1
+
+        else:
+            status_counts["normal"] += 1
+
+        # -----------------------------------
+        # Resource ID Formatting
+        # -----------------------------------
+
         resource_id = str(row["Resource_ID"])
 
-        # Short readable resource name
         resource_name = (
             resource_id
             .rstrip("/")
             .split("/")[-1]
         )
 
+        # -----------------------------------
+        # Store Resource Result
+        # -----------------------------------
+
         resources.append({
             "id": resource_name,
             "full_id": resource_id,
+
             "provider": row["Provider"],
             "type": row["Resource_Type"],
 
@@ -187,22 +217,37 @@ def analyze_cloud_data(data):
 
         saving_percentage = 0
 
-    # Sort resources by priority score (highest first)
-    resources = sorted(
+    # -----------------------------------
+    # Top 3 Opportunities
+    # -----------------------------------
+
+    # Create a separate sorted copy.
+    # Main resources list keeps the original uploaded-file order.
+    sorted_resources = sorted(
         resources,
         key=lambda resource: resource["priority_score"],
         reverse=True
     )
 
-    # Top 3 optimization opportunities
-    top_opportunities = resources[:3]
+    top_opportunities = sorted_resources[:3]
+
+    # -----------------------------------
+    # Final Result
+    # -----------------------------------
 
     return {
         "resources": resources,
+
         "top_opportunities": top_opportunities,
+
+        "status_counts": status_counts,
+
         "total_cost": total_current_cost,
+
         "potential_saving": total_potential_saving,
+
         "optimized_cost": optimized_cost,
+
         "saving_percentage": round(
             saving_percentage,
             2

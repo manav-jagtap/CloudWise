@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -27,8 +26,6 @@
             color: #666;
         }
 
-
-
         /* Upload Section */
 
         .upload-section {
@@ -38,7 +35,7 @@
             padding: 25px;
             border-radius: 12px;
             text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .upload-section h2 {
@@ -47,6 +44,12 @@
 
         input[type="file"] {
             padding: 10px;
+        }
+
+        select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
         }
 
         button {
@@ -88,7 +91,7 @@
             width: 230px;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
@@ -102,12 +105,72 @@
             font-weight: bold;
         }
 
-        /* Resource Table */
+        /* Chart */
+
+        .chart-container {
+            width: 60%;
+            max-width: 700px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Section Title */
 
         .table-title {
             text-align: center;
             margin-top: 50px;
         }
+
+        /* Status and Priority Badges */
+
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .status-idle {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-underutilized {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-normal {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-overutilized {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .priority-high {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .priority-medium {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .priority-low {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        /* Resource Table */
 
         .table-container {
             width: 95%;
@@ -119,7 +182,7 @@
             width: 100%;
             border-collapse: collapse;
             background: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         th {
@@ -146,11 +209,17 @@
 
     </style>
 
+    <!-- Chart.js Library -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 
 <body>
 
+
+<!-- CloudWise Header -->
 
 <h1>CloudWise</h1>
 
@@ -159,72 +228,83 @@
 </p>
 
 
-<!-- CSV Upload Section -->
+<!-- Upload Section -->
 
 <div class="upload-section">
 
     <h2>Upload Cloud Resource Data</h2>
 
     <p>
-       Select a CloudWise compatible CSV, JSON or Parquet file
+        Select a CloudWise compatible CSV, JSON or Parquet file
         to analyze your cloud resources.
     </p>
 
     <form method="POST" enctype="multipart/form-data">
 
-    {% csrf_token %}
+        {% csrf_token %}
 
-    <label for="provider">
-        <strong>Select Data Source:</strong>
-    </label>
+        <label for="provider">
+            <strong>Select Data Source:</strong>
+        </label>
 
-    <select name="provider" id="provider" required>
+        <select name="provider" id="provider" required>
 
-        <option value="">
-            -- Select Source --
-        </option>
+            <option value="">
+                -- Select Source --
+            </option>
 
-        <option value="offline">
-            Offline / Manual Data
-        </option>
+            <option value="offline">
+                Offline / Manual Data
+            </option>
 
-        <option value="azure">
-            Microsoft Azure(AZ)
-        </option>
+            <option value="azure">
+                Microsoft Azure (AZ)
+            </option>
 
-        <option value="aws">
-            Amazon Web Services (AWS)
-        </option>
+            <option value="aws">
+                Amazon Web Services (AWS)
+            </option>
 
-        <option value="gcp">
-            Google Cloud Platform (GCP)
-        </option>
+            <option value="gcp">
+                Google Cloud Platform (GCP)
+            </option>
 
-    </select>
+        </select>
 
-    <br><br>
+        <br><br>
 
-    <input
-        type="file"
-        name="cloud_file"
-        accept=".csv,.json,.parquet"
-        required
-    >
+        <input
+            type="file"
+            name="cloud_file"
+            accept=".csv,.json,.parquet"
+            required
+        >
 
-    <button type="submit">
-        Analyze File
-    </button>
+        <button type="submit">
+            Analyze File
+        </button>
 
-</form>
+    </form>
 
 </div>
 
+
+<!-- Selected Data Source -->
+
 {% if selected_provider %}
+
 <p style="text-align: center; margin-top: 20px;">
+
     Selected Data Source:
-    <strong>{{ selected_provider_name }}</strong>
+
+    <strong>
+        {{ selected_provider_name }}
+    </strong>
+
 </p>
+
 {% endif %}
+
 
 <!-- Error Message -->
 
@@ -246,8 +326,9 @@
 {% if resources %}
 
 
-<div class="container">
+<!-- Main Cost Summary -->
 
+<div class="container">
 
     <div class="card">
 
@@ -292,8 +373,86 @@
 
     </div>
 
+</div>
+
+
+<!-- Resource Status Summary -->
+
+<h2 class="table-title">
+    Resource Status Summary
+</h2>
+
+<div class="container">
+
+    <div class="card">
+
+        <h2>Potentially Idle</h2>
+
+        <div class="value">
+            {{ status_counts.idle }}
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Underutilized</h2>
+
+        <div class="value">
+            {{ status_counts.underutilized }}
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Normal</h2>
+
+        <div class="value">
+            {{ status_counts.normal }}
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Overutilized</h2>
+
+        <div class="value">
+            {{ status_counts.overutilized }}
+        </div>
+
+    </div>
 
 </div>
+
+
+<!-- Resource Status Distribution Chart -->
+
+<h2 class="table-title">
+    Resource Status Distribution
+</h2>
+
+<div class="chart-container">
+    <canvas id="statusChart"></canvas>
+</div>
+
+
+<!-- Cost vs Potential Saving -->
+
+<h2 class="table-title">
+    Cost vs Potential Saving
+</h2>
+
+<div class="chart-container">
+    <canvas id="costSavingChart"></canvas>
+</div>
+
+
+<!-- Top Optimization Opportunities -->
 
 {% if top_opportunities %}
 
@@ -307,27 +466,79 @@
 
     <div class="card">
 
-        <h2>{{ resource.id }}</h2>
+        <h2>
+            {{ resource.id }}
+        </h2>
 
         <p>
             <strong>Status:</strong>
-            {{ resource.status }}
+
+            {% if resource.status == "POTENTIALLY IDLE" %}
+
+                <span class="badge status-idle">
+                    {{ resource.status }}
+                </span>
+
+            {% elif resource.status == "UNDERUTILIZED" %}
+
+                <span class="badge status-underutilized">
+                    {{ resource.status }}
+                </span>
+
+            {% elif resource.status == "OVERUTILIZED" %}
+
+                <span class="badge status-overutilized">
+                    {{ resource.status }}
+                </span>
+
+            {% else %}
+
+                <span class="badge status-normal">
+                    {{ resource.status }}
+                </span>
+
+            {% endif %}
+
         </p>
+
 
         <p>
             <strong>Priority:</strong>
-            {{ resource.priority }}
+
+            {% if resource.priority == "HIGH" %}
+
+                <span class="badge priority-high">
+                    {{ resource.priority }}
+                </span>
+
+            {% elif resource.priority == "MEDIUM" %}
+
+                <span class="badge priority-medium">
+                    {{ resource.priority }}
+                </span>
+
+            {% else %}
+
+                <span class="badge priority-low">
+                    {{ resource.priority }}
+                </span>
+
+            {% endif %}
+
         </p>
+
 
         <p>
             <strong>Priority Score:</strong>
             {{ resource.priority_score }}/100
         </p>
 
+
         <p>
             <strong>Potential Saving:</strong>
             ₹{{ resource.saving }}
         </p>
+
 
         <p>
             {{ resource.recommendation }}
@@ -344,6 +555,21 @@
 
 <!-- Resource Analysis Table -->
 
+<div style="text-align: center; margin-top: 40px;">
+
+    <a href="{% url 'export_csv' %}">
+        <button type="button">
+            Download CSV Report
+        </button>
+    </a>
+
+     <a href="{% url 'export_pdf' %}">
+        <button type="button">
+            Download PDF Report
+        </button>
+    </a>
+
+</div>
 <h2 class="table-title">
     Resource Analysis
 </h2>
@@ -376,7 +602,6 @@
 
     <tbody>
 
-
     {% for resource in resources %}
 
     <tr>
@@ -402,12 +627,60 @@
         </td>
 
         <td>
-            {{ resource.status }}
+
+            {% if resource.status == "POTENTIALLY IDLE" %}
+
+                <span class="badge status-idle">
+                    {{ resource.status }}
+                </span>
+
+            {% elif resource.status == "UNDERUTILIZED" %}
+
+                <span class="badge status-underutilized">
+                    {{ resource.status }}
+                </span>
+
+            {% elif resource.status == "OVERUTILIZED" %}
+
+                <span class="badge status-overutilized">
+                    {{ resource.status }}
+                </span>
+
+            {% else %}
+
+                <span class="badge status-normal">
+                    {{ resource.status }}
+                </span>
+
+            {% endif %}
+
         </td>
 
+
         <td>
-            {{ resource.priority }}
+
+            {% if resource.priority == "HIGH" %}
+
+                <span class="badge priority-high">
+                    {{ resource.priority }}
+                </span>
+
+            {% elif resource.priority == "MEDIUM" %}
+
+                <span class="badge priority-medium">
+                    {{ resource.priority }}
+                </span>
+
+            {% else %}
+
+                <span class="badge priority-low">
+                    {{ resource.priority }}
+                </span>
+
+            {% endif %}
+
         </td>
+
 
         <td>
             {{ resource.priority_score }}/100
@@ -429,7 +702,6 @@
 
     {% endfor %}
 
-
     </tbody>
 
 </table>
@@ -437,14 +709,178 @@
 </div>
 
 
+<!-- Resource Status Chart -->
+
+<script>
+
+    const idleCount =
+        Number("{{ status_counts.idle|default:0 }}");
+
+    const underutilizedCount =
+        Number("{{ status_counts.underutilized|default:0 }}");
+
+    const normalCount =
+        Number("{{ status_counts.normal|default:0 }}");
+
+    const overutilizedCount =
+        Number("{{ status_counts.overutilized|default:0 }}");
+
+
+    const statusChartContext =
+        document.getElementById("statusChart");
+
+
+    new Chart(statusChartContext, {
+
+        type: "bar",
+
+        data: {
+
+            labels: [
+                "Potentially Idle",
+                "Underutilized",
+                "Normal",
+                "Overutilized"
+            ],
+
+            datasets: [{
+
+                label: "Number of Resources",
+
+                data: [
+                    idleCount,
+                    underutilizedCount,
+                    normalCount,
+                    overutilizedCount
+                ],
+
+                borderWidth: 1
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    ticks: {
+                        precision: 0
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+</script>
+
+
+<!-- Cost vs Potential Saving Chart -->
+
+<script>
+
+    const resourceLabels = [
+
+        {% for resource in resources %}
+
+            "{{ resource.id }}"{% if not forloop.last %},{% endif %}
+
+        {% endfor %}
+
+    ];
+
+
+    const monthlyCostData = [
+
+        {% for resource in resources %}
+
+            Number("{{ resource.cost }}"){% if not forloop.last %},{% endif %}
+
+        {% endfor %}
+
+    ];
+
+
+    const savingData = [
+
+        {% for resource in resources %}
+
+            Number("{{ resource.saving }}"){% if not forloop.last %},{% endif %}
+
+        {% endfor %}
+
+    ];
+
+
+    const costSavingContext =
+        document.getElementById("costSavingChart");
+
+
+    new Chart(costSavingContext, {
+
+        type: "bar",
+
+        data: {
+
+            labels: resourceLabels,
+
+            datasets: [
+
+                {
+                    label: "Monthly Cost",
+                    data: monthlyCostData,
+                    borderWidth: 1
+                },
+
+                {
+                    label: "Potential Saving",
+                    data: savingData,
+                    borderWidth: 1
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            scales: {
+
+                y: {
+                    beginAtZero: true
+                }
+
+            }
+
+        }
+
+    });
+
+</script>
+
+
 {% else %}
 
+
+<!-- Empty Dashboard Message -->
 
 {% if not error_message %}
 
 <p class="empty-message">
 
-    Upload a CSV,JSON,Parquet file to start
+    Upload a CSV, JSON or Parquet file to start
     CloudWise resource analysis.
 
 </p>
@@ -458,4 +894,3 @@
 </body>
 
 </html>
-
