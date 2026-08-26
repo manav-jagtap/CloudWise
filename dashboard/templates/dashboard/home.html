@@ -1,717 +1,1281 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>CloudWise Dashboard</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        :root {
+            --navy: #0f172a;
+            --blue: #2563eb;
+            --blue-light: #dbeafe;
+            --teal: #0f766e;
+            --green: #16a34a;
+            --green-light: #dcfce7;
+            --yellow: #f59e0b;
+            --yellow-light: #fef3c7;
+            --red: #dc2626;
+            --red-light: #fee2e2;
+            --gray: #64748b;
+            --border: #e2e8f0;
+            --white: #ffffff;
+        }
+
+        /* =========================
+           HEADER
+        ========================== */
+
+        .topbar {
+            background: var(--navy);
+            color: white;
+            padding: 16px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .brand h1 {
+            font-size: 22px;
+        }
+
+        .brand p {
+            color: #cbd5e1;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .topbar-badge {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        /* =========================
+           PAGE
+        ========================== */
+
+        .page {
+            max-width: 1450px;
+            margin: auto;
             padding: 30px;
         }
 
-        h1 {
-            text-align: center;
-            color: #2c3e50;
+        .page-title {
+            margin-bottom: 24px;
         }
 
-        .subtitle {
-            text-align: center;
-            color: #666;
+        .page-title h2 {
+            font-size: 28px;
+            color: var(--navy);
         }
 
-        /* Upload Section */
-
-        .upload-section {
-            background: white;
-            width: 60%;
-            margin: 30px auto;
-            padding: 25px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        .page-title p {
+            color: var(--gray);
+            margin-top: 7px;
+            font-size: 14px;
         }
 
-        .upload-section h2 {
-            margin-top: 0;
-        }
-
-        input[type="file"] {
-            padding: 10px;
-        }
-
-        select {
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
-
-        button {
-            background-color: #2c3e50;
-            color: white;
-            border: none;
-            padding: 11px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            opacity: 0.9;
-        }
-
-        /* Error Message */
-
-        .error {
-            width: 60%;
-            margin: 20px auto;
-            padding: 15px;
-            background-color: #ffe5e5;
-            text-align: center;
-            border-radius: 8px;
-        }
-
-        /* Dashboard Cards */
-
-        .container {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 40px;
-        }
+        /* =========================
+           GENERIC CARD
+        ========================== */
 
         .card {
             background: white;
-            width: 230px;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(15,23,42,0.05);
         }
 
-        .card h2 {
-            margin-bottom: 10px;
+        .card-header {
+            padding: 20px 22px 0;
+        }
+
+        .card-header h3 {
+            color: var(--navy);
             font-size: 18px;
         }
 
-        .value {
+        .card-header p {
+            color: var(--gray);
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        /* =========================
+           UPLOAD
+        ========================== */
+
+        .upload-card {
+            padding: 24px;
+            margin-bottom: 26px;
+        }
+
+        .upload-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .upload-title h3 {
+            color: var(--navy);
+            font-size: 19px;
+        }
+
+        .file-support {
+            color: var(--gray);
+            font-size: 12px;
+        }
+
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 14px;
+            align-items: end;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            color: #475569;
+            margin-bottom: 7px;
+        }
+
+        select,
+        input[type="file"] {
+            width: 100%;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 11px;
+            background: white;
+            color: #334155;
+        }
+
+        select:focus,
+        input[type="file"]:focus {
+            outline: 2px solid #bfdbfe;
+            border-color: var(--blue);
+        }
+
+        .btn {
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: var(--navy);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #1e293b;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid #cbd5e1;
+            color: var(--navy);
+        }
+
+        .btn-outline:hover {
+            background: #f1f5f9;
+        }
+
+        /* =========================
+           ALERT
+        ========================== */
+
+        .alert-error {
+            background: var(--red-light);
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            padding: 14px 16px;
+            border-radius: 9px;
+            margin-bottom: 20px;
+        }
+
+        .provider-strip {
+            background: var(--blue-light);
+            border-left: 4px solid var(--blue);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 22px;
+            color: #1e40af;
+            font-size: 14px;
+        }
+
+        /* =========================
+           SUMMARY CARDS
+        ========================== */
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 26px;
+        }
+
+        .summary-card {
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 5px;
+            height: 100%;
+        }
+
+        .summary-card.blue::before {
+            background: var(--blue);
+        }
+
+        .summary-card.green::before {
+            background: var(--green);
+        }
+
+        .summary-card.teal::before {
+            background: var(--teal);
+        }
+
+        .summary-card.yellow::before {
+            background: var(--yellow);
+        }
+
+        .summary-label {
+            font-size: 13px;
+            color: var(--gray);
+            margin-bottom: 9px;
+        }
+
+        .summary-value {
+            font-size: 27px;
+            font-weight: bold;
+            color: var(--navy);
+        }
+
+        .summary-caption {
+            color: #94a3b8;
+            font-size: 11px;
+            margin-top: 6px;
+        }
+
+        /* =========================
+           STATUS
+        ========================== */
+
+        .section-title {
+            margin: 28px 0 14px;
+            font-size: 20px;
+            color: var(--navy);
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 26px;
+        }
+
+        .status-card {
+            padding: 18px;
+        }
+
+        .status-card h4 {
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .status-number {
             font-size: 28px;
             font-weight: bold;
         }
 
-        /* Chart */
+        .idle-card {
+            border-top: 4px solid var(--yellow);
+        }
 
-        .chart-container {
-            width: 60%;
-            max-width: 700px;
-            margin: 30px auto;
-            background: white;
-            padding: 25px;
+        .under-card {
+            border-top: 4px solid var(--blue);
+        }
+
+        .normal-card {
+            border-top: 4px solid var(--green);
+        }
+
+        .over-card {
+            border-top: 4px solid var(--red);
+        }
+
+        /* =========================
+           CHARTS
+        ========================== */
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 26px;
+        }
+
+        .chart-card {
+            padding: 20px;
+            min-height: 370px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 290px;
+            margin-top: 20px;
+        }
+
+        /* =========================
+           TOP OPPORTUNITIES
+        ========================== */
+
+        .opportunity-wrapper {
+            padding: 20px;
+            margin-bottom: 26px;
+        }
+
+        .opportunity-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 18px;
+        }
+
+        .opportunity-card {
+            border: 1px solid var(--border);
             border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 17px;
+            background: #f8fafc;
         }
 
-        /* Section Title */
-
-        .table-title {
-            text-align: center;
-            margin-top: 50px;
+        .rank {
+            display: inline-flex;
+            width: 32px;
+            height: 32px;
+            align-items: center;
+            justify-content: center;
+            background: var(--navy);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
 
-        /* Status and Priority Badges */
+        .opportunity-card h4 {
+            font-size: 16px;
+            color: var(--navy);
+            margin-bottom: 9px;
+        }
+
+        .small-text {
+            color: var(--gray);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        /* =========================
+           BADGES
+        ========================== */
 
         .badge {
             display: inline-block;
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 11px;
             font-weight: bold;
             white-space: nowrap;
         }
 
-        .status-idle {
-            background-color: #fff3cd;
-            color: #856404;
+        .badge-idle {
+            background: var(--yellow-light);
+            color: #92400e;
         }
 
-        .status-underutilized {
-            background-color: #d1ecf1;
-            color: #0c5460;
+        .badge-under {
+            background: var(--blue-light);
+            color: #1e40af;
         }
 
-        .status-normal {
-            background-color: #d4edda;
-            color: #155724;
+        .badge-normal {
+            background: var(--green-light);
+            color: #166534;
         }
 
-        .status-overutilized {
-            background-color: #f8d7da;
-            color: #721c24;
+        .badge-over {
+            background: var(--red-light);
+            color: #991b1b;
         }
 
         .priority-high {
-            background-color: #f8d7da;
-            color: #721c24;
+            background: var(--red-light);
+            color: #991b1b;
         }
 
         .priority-medium {
-            background-color: #fff3cd;
-            color: #856404;
+            background: var(--yellow-light);
+            color: #92400e;
         }
 
         .priority-low {
-            background-color: #d4edda;
-            color: #155724;
+            background: var(--green-light);
+            color: #166534;
         }
 
-        /* Resource Table */
+        /* =========================
+           TABLE
+        ========================== */
 
-        .table-container {
-            width: 95%;
-            margin: 20px auto;
+        .analysis-card {
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .analysis-toolbar {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 9px;
+        }
+
+        .table-wrapper {
             overflow-x: auto;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            background: white;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            min-width: 1400px;
         }
 
-        th {
-            padding: 15px;
-            background: #2c3e50;
+        thead {
+            background: var(--navy);
             color: white;
         }
 
+        th,
         td {
-            padding: 15px;
+            padding: 13px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+        }
+
+        th {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .resource-name {
+            font-weight: bold;
+            color: var(--blue);
+        }
+
+        /* =========================
+           FOOTER
+        ========================== */
+
+        footer {
             text-align: center;
-            border-bottom: 1px solid #ddd;
+            padding: 22px;
+            color: #94a3b8;
+            font-size: 12px;
         }
 
-        tr:hover {
-            background: #f5f5f5;
+        /* =========================
+           RESPONSIVE
+        ========================== */
+
+        @media (max-width: 1000px) {
+
+            .summary-grid,
+            .status-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .opportunity-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .upload-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
-        .empty-message {
-            text-align: center;
-            margin-top: 40px;
-            color: #777;
-        }
+        @media (max-width: 600px) {
 
+            .page {
+                padding: 18px;
+            }
+
+            .summary-grid,
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                padding: 14px 18px;
+            }
+
+            .topbar-badge {
+                display: none;
+            }
+
+            .analysis-toolbar {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+        }
     </style>
-
-    <!-- Chart.js Library -->
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 </head>
-
 
 <body>
 
+<!-- =========================
+     TOP NAVIGATION
+========================== -->
 
-<!-- CloudWise Header -->
+<header class="topbar">
 
-<h1>CloudWise</h1>
+    <div class="brand">
+        <div class="logo">CW</div>
 
-<p class="subtitle">
-    Cloud Cost Analysis & Resource Optimization Dashboard
-</p>
+        <div>
+            <h1>CloudWise</h1>
+            <p>Multi-Cloud Cost & Resource Optimization</p>
+        </div>
+    </div>
 
+    <div class="topbar-badge">
+        Cloud Cost Intelligence
+    </div>
 
-<!-- Upload Section -->
-
-<div class="upload-section">
-
-    <h2>Upload Cloud Resource Data</h2>
-
-    <p>
-        Select a CloudWise compatible CSV, JSON or Parquet file
-        to analyze your cloud resources.
-    </p>
-
-    <form method="POST" enctype="multipart/form-data">
-
-        {% csrf_token %}
-
-        <label for="provider">
-            <strong>Select Data Source:</strong>
-        </label>
-
-        <select name="provider" id="provider" required>
-
-            <option value="">
-                -- Select Source --
-            </option>
-
-            <option value="offline">
-                Offline / Manual Data
-            </option>
-
-            <option value="azure">
-                Microsoft Azure (AZ)
-            </option>
-
-            <option value="aws">
-                Amazon Web Services (AWS)
-            </option>
-
-            <option value="gcp">
-                Google Cloud Platform (GCP)
-            </option>
-
-        </select>
-
-        <br><br>
-
-        <input
-            type="file"
-            name="cloud_file"
-            accept=".csv,.json,.parquet"
-            required
-        >
-
-        <button type="submit">
-            Analyze File
-        </button>
-
-    </form>
-
-</div>
+</header>
 
 
-<!-- Selected Data Source -->
+<main class="page">
 
-{% if selected_provider %}
+    <div class="page-title">
+        <h2>Cloud Optimization Dashboard</h2>
+        <p>
+            Analyze cloud utilization, identify optimization opportunities,
+            and estimate potential cost savings.
+        </p>
+    </div>
 
-<p style="text-align: center; margin-top: 20px;">
 
-    Selected Data Source:
+    <!-- =========================
+         ERROR
+    ========================== -->
 
-    <strong>
+    {% if error_message %}
+
+    <div class="alert-error">
+        <strong>Analysis Error:</strong>
+        {{ error_message }}
+    </div>
+
+    {% endif %}
+
+
+    <!-- =========================
+         FILE UPLOAD
+    ========================== -->
+
+    <div class="card upload-card">
+
+        <div class="upload-title">
+
+            <div>
+                <h3>Analyze Cloud Resource Data</h3>
+                <p class="small-text">
+                    Select a provider and upload resource utilization data.
+                </p>
+            </div>
+
+            <span class="file-support">
+                CSV • JSON • Parquet
+            </span>
+
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <div class="upload-grid">
+
+                <div class="form-group">
+
+                    <label>Cloud Data Source</label>
+
+                    <select name="provider" required>
+
+                        <option value="">
+                            Select Data Source
+                        </option>
+
+                        <option value="offline"
+                            {% if selected_provider == "offline" %}selected{% endif %}>
+                            Offline / Manual Data
+                        </option>
+
+                        <option value="azure"
+                            {% if selected_provider == "azure" %}selected{% endif %}>
+                            Microsoft Azure
+                        </option>
+
+                        <option value="aws"
+                            {% if selected_provider == "aws" %}selected{% endif %}>
+                            Amazon Web Services (AWS)
+                        </option>
+
+                        <option value="gcp"
+                            {% if selected_provider == "gcp" %}selected{% endif %}>
+                            Google Cloud Platform (GCP)
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Upload Resource File</label>
+
+                    <input
+                        type="file"
+                        name="cloud_file"
+                        accept=".csv,.json,.parquet"
+                        required
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        Analyze Resources
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    {% if selected_provider_name %}
+
+    <div class="provider-strip">
+        <strong>Selected Data Source:</strong>
         {{ selected_provider_name }}
-    </strong>
+    </div>
 
-</p>
-
-{% endif %}
+    {% endif %}
 
 
-<!-- Error Message -->
+    <!-- =========================
+         RESULTS
+    ========================== -->
 
-{% if error_message %}
-
-<div class="error">
-
-    <strong>Error:</strong>
-
-    {{ error_message }}
-
-</div>
-
-{% endif %}
+    {% if resources %}
 
 
-<!-- Dashboard Results -->
+    <!-- COST SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="card summary-card blue">
+
+            <div class="summary-label">
+                Total Monthly Cost
+            </div>
+
+            <div class="summary-value">
+                ₹{{ total_cost }}
+            </div>
+
+            <div class="summary-caption">
+                Current estimated cloud spend
+            </div>
+
+        </div>
+
+
+        <div class="card summary-card green">
+
+            <div class="summary-label">
+                Potential Saving
+            </div>
+
+            <div class="summary-value">
+                ₹{{ potential_saving }}
+            </div>
+
+            <div class="summary-caption">
+                Estimated optimization opportunity
+            </div>
+
+        </div>
+
+
+        <div class="card summary-card teal">
+
+            <div class="summary-label">
+                Optimized Cost
+            </div>
+
+            <div class="summary-value">
+                ₹{{ optimized_cost }}
+            </div>
+
+            <div class="summary-caption">
+                Estimated cost after optimization
+            </div>
+
+        </div>
+
+
+        <div class="card summary-card yellow">
+
+            <div class="summary-label">
+                Saving Percentage
+            </div>
+
+            <div class="summary-value">
+                {{ saving_percentage }}%
+            </div>
+
+            <div class="summary-caption">
+                Estimated monthly reduction
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- STATUS SUMMARY -->
+
+    <h3 class="section-title">
+        Resource Status Summary
+    </h3>
+
+
+    <div class="status-grid">
+
+        <div class="card status-card idle-card">
+
+            <h4>Potentially Idle</h4>
+
+            <div class="status-number">
+                {{ status_counts.idle|default:0 }}
+            </div>
+
+        </div>
+
+
+        <div class="card status-card under-card">
+
+            <h4>Underutilized</h4>
+
+            <div class="status-number">
+                {{ status_counts.underutilized|default:0 }}
+            </div>
+
+        </div>
+
+
+        <div class="card status-card normal-card">
+
+            <h4>Normal</h4>
+
+            <div class="status-number">
+                {{ status_counts.normal|default:0 }}
+            </div>
+
+        </div>
+
+
+        <div class="card status-card over-card">
+
+            <h4>Overutilized</h4>
+
+            <div class="status-number">
+                {{ status_counts.overutilized|default:0 }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         CHARTS
+    ========================== -->
+
+    <div class="chart-grid">
+
+
+        <div class="card chart-card">
+
+            <div class="card-header">
+
+                <h3>
+                    Resource Status Distribution
+                </h3>
+
+                <p>
+                    Distribution of resources by utilization category
+                </p>
+
+            </div>
+
+            <div class="chart-wrapper">
+                <canvas id="statusChart"></canvas>
+            </div>
+
+        </div>
+
+
+        <div class="card chart-card">
+
+            <div class="card-header">
+
+                <h3>
+                    Cost vs Potential Saving
+                </h3>
+
+                <p>
+                    Compare monthly cost and optimization opportunity
+                </p>
+
+            </div>
+
+            <div class="chart-wrapper">
+                <canvas id="costChart"></canvas>
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =========================
+         TOP OPPORTUNITIES
+    ========================== -->
+
+    <div class="card opportunity-wrapper">
+
+        <div class="card-header">
+
+            <h3>
+                Top Optimization Opportunities
+            </h3>
+
+            <p>
+                Highest-priority resources requiring attention
+            </p>
+
+        </div>
+
+
+        <div class="opportunity-grid">
+
+            {% for resource in top_opportunities %}
+
+            <div class="opportunity-card">
+
+                <div class="rank">
+                    {{ forloop.counter }}
+                </div>
+
+                <h4>
+                    {{ resource.id }}
+                </h4>
+
+                <p class="small-text">
+                    Provider:
+                    <strong>{{ resource.provider }}</strong>
+                </p>
+
+                <p class="small-text">
+                    Priority Score:
+                    <strong>{{ resource.priority_score }}/100</strong>
+                </p>
+
+                <p class="small-text">
+                    Monthly Cost:
+                    <strong>₹{{ resource.cost }}</strong>
+                </p>
+
+                <p class="small-text">
+                    Potential Saving:
+                    <strong>₹{{ resource.saving }}</strong>
+                </p>
+
+                <br>
+
+                {% if resource.status == "POTENTIALLY IDLE" %}
+
+                    <span class="badge badge-idle">
+                        Potentially Idle
+                    </span>
+
+                {% elif resource.status == "UNDERUTILIZED" %}
+
+                    <span class="badge badge-under">
+                        Underutilized
+                    </span>
+
+                {% elif resource.status == "OVERUTILIZED" %}
+
+                    <span class="badge badge-over">
+                        Overutilized
+                    </span>
+
+                {% else %}
+
+                    <span class="badge badge-normal">
+                        Normal
+                    </span>
+
+                {% endif %}
+
+
+                {% if resource.priority == "HIGH" %}
+
+                    <span class="badge priority-high">
+                        High Priority
+                    </span>
+
+                {% elif resource.priority == "MEDIUM" %}
+
+                    <span class="badge priority-medium">
+                        Medium Priority
+                    </span>
+
+                {% else %}
+
+                    <span class="badge priority-low">
+                        Low Priority
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         DETAILED ANALYSIS
+    ========================== -->
+
+    <div class="card analysis-card">
+
+        <div class="analysis-toolbar">
+
+            <div>
+
+                <h3>
+                    Detailed Resource Analysis
+                </h3>
+
+                <p class="small-text">
+                    Complete utilization, cost and recommendation details
+                </p>
+
+            </div>
+
+
+            <div class="export-buttons">
+
+                <a
+                    href="{% url 'export_csv' %}"
+                    class="btn btn-secondary"
+                >
+                    Download CSV
+                </a>
+
+                <a
+                    href="{% url 'export_pdf' %}"
+                    class="btn btn-secondary"
+                >
+                    Download PDF
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Resource</th>
+                        <th>Provider</th>
+                        <th>Type</th>
+
+                        <th>Avg CPU</th>
+                        <th>Peak CPU</th>
+                        <th>RAM</th>
+
+                        <th>Runtime</th>
+
+                        <th>Status</th>
+
+                        <th>Priority</th>
+
+                        <th>Score</th>
+
+                        <th>Monthly Cost</th>
+
+                        <th>Potential Saving</th>
+
+                        <th>Recommendation</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for resource in resources %}
+
+                    <tr>
+
+                        <td class="resource-name">
+                            {{ resource.id }}
+                        </td>
+
+                        <td>
+                            {{ resource.provider }}
+                        </td>
+
+                        <td>
+                            {{ resource.type }}
+                        </td>
+
+                        <td>
+                            {{ resource.cpu }}%
+                        </td>
+
+                        <td>
+                            {{ resource.peak_cpu }}%
+                        </td>
+
+                        <td>
+                            {{ resource.ram }}%
+                        </td>
+
+                        <td>
+                            {{ resource.runtime_hours }}
+                        </td>
+
+
+                        <td>
+
+                            {% if resource.status == "POTENTIALLY IDLE" %}
+
+                                <span class="badge badge-idle">
+                                    Potentially Idle
+                                </span>
+
+                            {% elif resource.status == "UNDERUTILIZED" %}
+
+                                <span class="badge badge-under">
+                                    Underutilized
+                                </span>
+
+                            {% elif resource.status == "OVERUTILIZED" %}
+
+                                <span class="badge badge-over">
+                                    Overutilized
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge badge-normal">
+                                    Normal
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if resource.priority == "HIGH" %}
+
+                                <span class="badge priority-high">
+                                    High
+                                </span>
+
+                            {% elif resource.priority == "MEDIUM" %}
+
+                                <span class="badge priority-medium">
+                                    Medium
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge priority-low">
+                                    Low
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+                            <strong>
+                                {{ resource.priority_score }}/100
+                            </strong>
+                        </td>
+
+
+                        <td>
+                            ₹{{ resource.cost }}
+                        </td>
+
+
+                        <td>
+                            ₹{{ resource.saving }}
+                        </td>
+
+
+                        <td>
+                            {{ resource.recommendation }}
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    {% endif %}
+
+</main>
+
+
+<footer>
+    CloudWise • Intelligent Multi-Cloud Cost Analysis & Resource Optimization Platform
+</footer>
+
+
+<!-- =========================
+     CHART JAVASCRIPT
+========================== -->
 
 {% if resources %}
 
-
-<!-- Main Cost Summary -->
-
-<div class="container">
-
-    <div class="card">
-
-        <h2>Total Monthly Cost</h2>
-
-        <div class="value">
-            ₹{{ total_cost }}
-        </div>
-
-    </div>
-
-
-    <div class="card">
-
-        <h2>Potential Saving</h2>
-
-        <div class="value">
-            ₹{{ potential_saving }}
-        </div>
-
-    </div>
-
-
-    <div class="card">
-
-        <h2>Optimized Cost</h2>
-
-        <div class="value">
-            ₹{{ optimized_cost }}
-        </div>
-
-    </div>
-
-
-    <div class="card">
-
-        <h2>Saving Percentage</h2>
-
-        <div class="value">
-            {{ saving_percentage }}%
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- Resource Status Summary -->
-
-<h2 class="table-title">
-    Resource Status Summary
-</h2>
-
-<div class="container">
-
-    <div class="card">
-
-        <h2>Potentially Idle</h2>
-
-        <div class="value">
-            {{ status_counts.idle }}
-        </div>
-
-    </div>
-
-
-    <div class="card">
-
-        <h2>Underutilized</h2>
-
-        <div class="value">
-            {{ status_counts.underutilized }}
-        </div>
-
-    </div>
-
-
-    <div class="card">
-
-        <h2>Normal</h2>
-
-        <div class="value">
-            {{ status_counts.normal }}
-        </div>
-
-    </div>
-
-
-    <div class="card">
-
-        <h2>Overutilized</h2>
-
-        <div class="value">
-            {{ status_counts.overutilized }}
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- Resource Status Distribution Chart -->
-
-<h2 class="table-title">
-    Resource Status Distribution
-</h2>
-
-<div class="chart-container">
-    <canvas id="statusChart"></canvas>
-</div>
-
-
-<!-- Cost vs Potential Saving -->
-
-<h2 class="table-title">
-    Cost vs Potential Saving
-</h2>
-
-<div class="chart-container">
-    <canvas id="costSavingChart"></canvas>
-</div>
-
-
-<!-- Top Optimization Opportunities -->
-
-{% if top_opportunities %}
-
-<h2 class="table-title">
-    Top Optimization Opportunities
-</h2>
-
-<div class="container">
-
-    {% for resource in top_opportunities %}
-
-    <div class="card">
-
-        <h2>
-            {{ resource.id }}
-        </h2>
-
-        <p>
-            <strong>Status:</strong>
-
-            {% if resource.status == "POTENTIALLY IDLE" %}
-
-                <span class="badge status-idle">
-                    {{ resource.status }}
-                </span>
-
-            {% elif resource.status == "UNDERUTILIZED" %}
-
-                <span class="badge status-underutilized">
-                    {{ resource.status }}
-                </span>
-
-            {% elif resource.status == "OVERUTILIZED" %}
-
-                <span class="badge status-overutilized">
-                    {{ resource.status }}
-                </span>
-
-            {% else %}
-
-                <span class="badge status-normal">
-                    {{ resource.status }}
-                </span>
-
-            {% endif %}
-
-        </p>
-
-
-        <p>
-            <strong>Priority:</strong>
-
-            {% if resource.priority == "HIGH" %}
-
-                <span class="badge priority-high">
-                    {{ resource.priority }}
-                </span>
-
-            {% elif resource.priority == "MEDIUM" %}
-
-                <span class="badge priority-medium">
-                    {{ resource.priority }}
-                </span>
-
-            {% else %}
-
-                <span class="badge priority-low">
-                    {{ resource.priority }}
-                </span>
-
-            {% endif %}
-
-        </p>
-
-
-        <p>
-            <strong>Priority Score:</strong>
-            {{ resource.priority_score }}/100
-        </p>
-
-
-        <p>
-            <strong>Potential Saving:</strong>
-            ₹{{ resource.saving }}
-        </p>
-
-
-        <p>
-            {{ resource.recommendation }}
-        </p>
-
-    </div>
-
-    {% endfor %}
-
-</div>
-
-{% endif %}
-
-
-<!-- Resource Analysis Table -->
-
-<div style="text-align: center; margin-top: 40px;">
-
-    <a href="{% url 'export_csv' %}">
-        <button type="button">
-            Download CSV Report
-        </button>
-    </a>
-
-     <a href="{% url 'export_pdf' %}">
-        <button type="button">
-            Download PDF Report
-        </button>
-    </a>
-
-</div>
-<h2 class="table-title">
-    Resource Analysis
-</h2>
-
-
-<div class="table-container">
-
-<table>
-
-    <thead>
-
-    <tr>
-
-        <th>Resource</th>
-        <th>Avg CPU</th>
-        <th>Peak CPU</th>
-        <th>RAM Usage</th>
-        <th>Runtime Hours</th>
-        <th>Status</th>
-        <th>Priority</th>
-        <th>Priority Score</th>
-        <th>Monthly Cost</th>
-        <th>Potential Saving</th>
-        <th>Recommendation</th>
-
-    </tr>
-
-    </thead>
-
-
-    <tbody>
-
-    {% for resource in resources %}
-
-    <tr>
-
-        <td>
-            {{ resource.id }}
-        </td>
-
-        <td>
-            {{ resource.cpu }}%
-        </td>
-
-        <td>
-            {{ resource.peak_cpu }}%
-        </td>
-
-        <td>
-            {{ resource.ram }}%
-        </td>
-
-        <td>
-            {{ resource.runtime_hours }} hrs
-        </td>
-
-        <td>
-
-            {% if resource.status == "POTENTIALLY IDLE" %}
-
-                <span class="badge status-idle">
-                    {{ resource.status }}
-                </span>
-
-            {% elif resource.status == "UNDERUTILIZED" %}
-
-                <span class="badge status-underutilized">
-                    {{ resource.status }}
-                </span>
-
-            {% elif resource.status == "OVERUTILIZED" %}
-
-                <span class="badge status-overutilized">
-                    {{ resource.status }}
-                </span>
-
-            {% else %}
-
-                <span class="badge status-normal">
-                    {{ resource.status }}
-                </span>
-
-            {% endif %}
-
-        </td>
-
-
-        <td>
-
-            {% if resource.priority == "HIGH" %}
-
-                <span class="badge priority-high">
-                    {{ resource.priority }}
-                </span>
-
-            {% elif resource.priority == "MEDIUM" %}
-
-                <span class="badge priority-medium">
-                    {{ resource.priority }}
-                </span>
-
-            {% else %}
-
-                <span class="badge priority-low">
-                    {{ resource.priority }}
-                </span>
-
-            {% endif %}
-
-        </td>
-
-
-        <td>
-            {{ resource.priority_score }}/100
-        </td>
-
-        <td>
-            ₹{{ resource.cost }}
-        </td>
-
-        <td>
-            ₹{{ resource.saving }}
-        </td>
-
-        <td>
-            {{ resource.recommendation }}
-        </td>
-
-    </tr>
-
-    {% endfor %}
-
-    </tbody>
-
-</table>
-
-</div>
-
-
-<!-- Resource Status Chart -->
-
 <script>
+
+    /* Resource Status Chart */
 
     const idleCount =
         Number("{{ status_counts.idle|default:0 }}");
@@ -726,74 +1290,76 @@
         Number("{{ status_counts.overutilized|default:0 }}");
 
 
-    const statusChartContext =
-        document.getElementById("statusChart");
+    new Chart(
+        document.getElementById("statusChart"),
+        {
+            type: "bar",
 
+            data: {
 
-    new Chart(statusChartContext, {
-
-        type: "bar",
-
-        data: {
-
-            labels: [
-                "Potentially Idle",
-                "Underutilized",
-                "Normal",
-                "Overutilized"
-            ],
-
-            datasets: [{
-
-                label: "Number of Resources",
-
-                data: [
-                    idleCount,
-                    underutilizedCount,
-                    normalCount,
-                    overutilizedCount
+                labels: [
+                    "Potentially Idle",
+                    "Underutilized",
+                    "Normal",
+                    "Overutilized"
                 ],
 
-                borderWidth: 1
+                datasets: [{
+                    label: "Resources",
 
-            }]
+                    data: [
+                        idleCount,
+                        underutilizedCount,
+                        normalCount,
+                        overutilizedCount
+                    ],
 
-        },
+                    backgroundColor: [
+                        "#f59e0b",
+                        "#2563eb",
+                        "#16a34a",
+                        "#dc2626"
+                    ],
 
-        options: {
+                    borderRadius: 7
+                }]
+            },
 
-            responsive: true,
+            options: {
 
-            scales: {
+                responsive: true,
 
-                y: {
+                maintainAspectRatio: false,
 
-                    beginAtZero: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
 
-                    ticks: {
-                        precision: 0
+                scales: {
+
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
                     }
 
                 }
-
             }
-
         }
-
-    });
-
-</script>
+    );
 
 
-<!-- Cost vs Potential Saving Chart -->
-
-<script>
+    /* Cost Chart */
 
     const resourceLabels = [
 
         {% for resource in resources %}
 
-            "{{ resource.id }}"{% if not forloop.last %},{% endif %}
+            "{{ resource.id }}"
+            {% if not forloop.last %},{% endif %}
 
         {% endfor %}
 
@@ -804,7 +1370,8 @@
 
         {% for resource in resources %}
 
-            Number("{{ resource.cost }}"){% if not forloop.last %},{% endif %}
+            Number("{{ resource.cost }}")
+            {% if not forloop.last %},{% endif %}
 
         {% endfor %}
 
@@ -815,82 +1382,70 @@
 
         {% for resource in resources %}
 
-            Number("{{ resource.saving }}"){% if not forloop.last %},{% endif %}
+            Number("{{ resource.saving }}")
+            {% if not forloop.last %},{% endif %}
 
         {% endfor %}
 
     ];
 
 
-    const costSavingContext =
-        document.getElementById("costSavingChart");
+    new Chart(
+        document.getElementById("costChart"),
+        {
+            type: "bar",
 
+            data: {
 
-    new Chart(costSavingContext, {
+                labels: resourceLabels,
 
-        type: "bar",
+                datasets: [
 
-        data: {
+                    {
+                        label: "Monthly Cost",
+                        data: monthlyCostData,
+                        backgroundColor: "#2563eb",
+                        borderRadius: 6
+                    },
 
-            labels: resourceLabels,
+                    {
+                        label: "Potential Saving",
+                        data: savingData,
+                        backgroundColor: "#16a34a",
+                        borderRadius: 6
+                    }
 
-            datasets: [
+                ]
+            },
 
-                {
-                    label: "Monthly Cost",
-                    data: monthlyCostData,
-                    borderWidth: 1
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+                        position: "bottom"
+                    }
+
                 },
 
-                {
-                    label: "Potential Saving",
-                    data: savingData,
-                    borderWidth: 1
+                scales: {
+
+                    y: {
+                        beginAtZero: true
+                    }
+
                 }
-
-            ]
-
-        },
-
-        options: {
-
-            responsive: true,
-
-            scales: {
-
-                y: {
-                    beginAtZero: true
-                }
-
             }
-
         }
-
-    });
+    );
 
 </script>
 
-
-{% else %}
-
-
-<!-- Empty Dashboard Message -->
-
-{% if not error_message %}
-
-<p class="empty-message">
-
-    Upload a CSV, JSON or Parquet file to start
-    CloudWise resource analysis.
-
-</p>
-
 {% endif %}
-
-
-{% endif %}
-
 
 </body>
-
 </html>
