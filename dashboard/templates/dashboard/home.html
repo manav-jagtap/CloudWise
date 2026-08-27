@@ -600,6 +600,49 @@
                 align-items: flex-start;
             }
         }
+
+        /* =========================================================
+   SAMPLE DATA DOWNLOAD BUTTONS
+========================================================= */
+
+.sample-downloads {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.sample-downloads p {
+    width: 100%;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.sample-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 9px 14px;
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    background: #eef6ff;
+    border: 1px solid #b8d8ff;
+    color: #0b5ed7;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: 0.2s ease;
+}
+
+.sample-btn:hover {
+    background: #dcecff;
+    transform: translateY(-1px);
+}
     </style>
 </head>
 
@@ -742,6 +785,26 @@
             </div>
 
         </form>
+
+        <div class="sample-downloads">
+    <p>Download sample data:</p>
+
+    <a href="{% url 'download_sample' 'manual' %}" class="sample-btn">
+        Manual CSV
+    </a>
+
+    <a href="{% url 'download_sample' 'azure' %}" class="sample-btn">
+        Azure CSV
+    </a>
+
+    <a href="{% url 'download_sample' 'aws' %}" class="sample-btn">
+        AWS CSV
+    </a>
+
+    <a href="{% url 'download_sample' 'gcp' %}" class="sample-btn">
+        GCP CSV
+    </a>
+</div>
 
     </div>
 

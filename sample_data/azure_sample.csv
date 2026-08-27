@@ -1,0 +1,9 @@
+ResourceId,ResourceType,VCpu,RamGB,AverageCpu,PeakCpu,AverageMemory,RuntimeHours,CostInBillingCurrency,BillingCurrency
+/subscriptions/demo/resourceGroups/rg-cloudwise/providers/Microsoft.Compute/virtualMachines/az-vm-01,Microsoft.Compute/virtualMachines,4,16,74,93,70,720,8500,INR
+/subscriptions/demo/resourceGroups/rg-cloudwise/providers/Microsoft.Compute/virtualMachines/az-vm-02,Microsoft.Compute/virtualMachines,8,32,3,16,6,720,12500,INR
+/subscriptions/demo/resourceGroups/rg-cloudwise/providers/Microsoft.Compute/virtualMachines/az-vm-03,Microsoft.Compute/virtualMachines,4,16,14,35,22,700,9800,INR
+/subscriptions/demo/resourceGroups/rg-cloudwise/providers/Microsoft.Compute/virtualMachines/az-vm-04,Microsoft.Compute/virtualMachines,2,8,1.2,8,4,520,6800,INR
+/subscriptions/demo/resourceGroups/rg-cloudwise/providers/Microsoft.Compute/virtualMachines/az-vm-05,Microsoft.Compute/virtualMachines,2,8,46,71,52,600,6200,INR
+/subscriptions/demo/resourceGroups/rg-cloudwise/providers/Microsoft.Compute/virtualMachines/az-vm-06,Microsoft.Compute/virtualMachines,16,64,89,97,85,720,18500,INR
+/subscriptions/demo/resourceGroups/rg-cloudwise/providers/Microsoft.Compute/virtualMachines/az-vm-07,Microsoft.Compute/virtualMachines,4,16,18,48,26,480,9100,INR
+/subscriptions/demo/resourceGroups/rg-cloudwise/providers/Microsoft.Compute/virtualMachines/az-vm-08,Microsoft.Compute/virtualMachines,8,32,38,62,45,650,11200,INR

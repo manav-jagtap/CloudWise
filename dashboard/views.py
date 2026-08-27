@@ -1,6 +1,9 @@
 import csv
 import pandas as pd
 
+from django.conf import settings
+from django.http import FileResponse, Http404
+
 from django.http import HttpResponse
 from django.shortcuts import render
 
@@ -728,3 +731,27 @@ def export_pdf(request):
     doc.build(story)
 
     return response
+
+def download_sample(request, provider):
+    sample_files = {
+        "manual": "manual_sample.csv",
+        "azure": "azure_sample.csv",
+        "aws": "aws_sample.csv",
+        "gcp": "gcp_sample.csv",
+    }
+
+    filename = sample_files.get(provider.lower())
+
+    if not filename:
+        raise Http404("Sample file not found.")
+
+    file_path = settings.SAMPLE_DATA_ROOT / filename
+
+    if not file_path.exists():
+        raise Http404("Sample file not found.")
+
+    return FileResponse(
+        open(file_path, "rb"),
+        as_attachment=True,
+        filename=filename
+    )

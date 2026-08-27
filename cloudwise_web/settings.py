@@ -141,3 +141,5 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+SAMPLE_DATA_ROOT = BASE_DIR / "sample_data"

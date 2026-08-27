@@ -1,0 +1,9 @@
+resource_name,resource_type,vcpus,memory_gb,avg_cpu_utilization,peak_cpu_utilization,avg_memory_utilization,runtime_hours,monthly_cost,currency
+projects/demo/zones/asia-south1-a/instances/gcp-vm-01,Compute Engine VM,4,16,73,91,67,720,8100,INR
+projects/demo/zones/asia-south1-a/instances/gcp-vm-02,Compute Engine VM,8,32,3,17,7,720,11900,INR
+projects/demo/zones/asia-south1-a/instances/gcp-vm-03,Compute Engine VM,4,16,12,31,19,700,9600,INR
+projects/demo/zones/asia-south1-a/instances/gcp-vm-04,Compute Engine VM,2,8,1,6,3,520,6500,INR
+projects/demo/zones/asia-south1-a/instances/gcp-vm-05,Compute Engine VM,2,8,47,72,53,600,6300,INR
+projects/demo/zones/asia-south1-a/instances/gcp-vm-06,Compute Engine VM,16,64,90,98,86,720,18100,INR
+projects/demo/zones/asia-south1-a/instances/gcp-vm-07,Compute Engine VM,4,16,18,45,25,480,8900,INR
+projects/demo/zones/asia-south1-a/instances/gcp-vm-08,Compute Engine VM,8,32,39,63,46,650,10900,INR
