@@ -11,6 +11,10 @@ It accepts cloud resource data, converts provider-specific datasets into one com
 
 The current version is a file-based multi-cloud prototype supporting Offline/Manual, Azure-style, AWS-style, and GCP-style datasets.
 
+## Live Demo
+
+**[Open CloudWise Live](https://cloudwise-afx3.onrender.com)**
+
 ---
 
 ## Key Features
